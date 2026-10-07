@@ -1,0 +1,27 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /home/jose/projects/equipment-borrowing/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/jose/projects/equipment-borrowing
+configfile: pytest.ini
+testpaths: tests
+collecting ... collected 1 item
+
+tests/test_loan_period.py::test_T1_loan_period_accepts_1_to_7_days_and_rejects_others_BR1 FAILED [100%]
+
+=================================== FAILURES ===================================
+________ test_T1_loan_period_accepts_1_to_7_days_and_rejects_others_BR1 ________
+
+    def test_T1_loan_period_accepts_1_to_7_days_and_rejects_others_BR1():
+        # Boundary cases: the edges of the valid range must be accepted
+        assert LoanPeriod(1).days == 1
+        assert LoanPeriod(7).days == 7
+    
+        # Rejection cases: just outside each edge, and a nonsense value
+        for invalid_days in (0, 8, -3):
+>           with pytest.raises(InvalidLoanPeriod):
+E           Failed: DID NOT RAISE InvalidLoanPeriod
+
+tests/test_loan_period.py:13: Failed
+=========================== short test summary info ============================
+FAILED tests/test_loan_period.py::test_T1_loan_period_accepts_1_to_7_days_and_rejects_others_BR1
+============================== 1 failed in 0.02s ===============================
