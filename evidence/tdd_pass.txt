@@ -1,0 +1,11 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /home/jose/projects/equipment-borrowing/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/jose/projects/equipment-borrowing
+configfile: pytest.ini
+testpaths: tests
+collecting ... collected 1 item
+
+tests/test_loan_period.py::test_T1_loan_period_accepts_1_to_7_days_and_rejects_others_BR1 PASSED [100%]
+
+============================== 1 passed in 0.01s ===============================
