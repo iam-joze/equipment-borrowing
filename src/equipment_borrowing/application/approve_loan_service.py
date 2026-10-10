@@ -1,4 +1,8 @@
-from equipment_borrowing.application.dtos import ApproveLoanRequest, ApproveLoanResult
+from equipment_borrowing.application.dtos import (
+    ApproveLoanRequest,
+    ApproveLoanResult,
+    ApproveLoanStatus,
+)
 from equipment_borrowing.application.repositories import (
     BorrowerAccountRepository,
     EquipmentRepository,
@@ -6,6 +10,9 @@ from equipment_borrowing.application.repositories import (
 
 
 class ApproveLoanService:
+    """Application Service for the main use case. It coordinates; the business
+    rules live in the domain objects it calls."""
+
     def __init__(
         self,
         equipment_repository: EquipmentRepository,
@@ -15,4 +22,13 @@ class ApproveLoanService:
         self._account_repository = account_repository
 
     def execute(self, request: ApproveLoanRequest) -> ApproveLoanResult:
-        raise NotImplementedError
+        # BR6: the equipment must exist before anything else happens
+        equipment = self._equipment_repository.get(request.equipment_id)
+        if equipment is None:
+            return ApproveLoanResult(
+                status=ApproveLoanStatus.EQUIPMENT_NOT_FOUND,
+                message=f"Equipment {request.equipment_id} does not exist",
+            )
+
+        # The rest of the use case is driven by T7
+        raise NotImplementedError("Success path is added when T7 is written")
