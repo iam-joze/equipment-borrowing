@@ -13,6 +13,7 @@ class ApproveLoanRequest:
 
 
 class ApproveLoanStatus(Enum):
+    APPROVED = "APPROVED"
     EQUIPMENT_NOT_FOUND = "EQUIPMENT_NOT_FOUND"
 
 
