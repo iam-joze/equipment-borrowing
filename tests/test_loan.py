@@ -11,7 +11,7 @@ def make_loan() -> Loan:
         period=LoanPeriod(3)
     )
 
-def test_T2_loan_follows_allowed_state_transactions_and_rejects_others_BR2():
+def test_T2_loan_follows_allowed_state_transitions_and_rejects_others_BR2():
     loan = make_loan()
     assert loan.status == LoanStatus.REQUESTED
 

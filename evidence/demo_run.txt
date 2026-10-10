@@ -1,0 +1,8 @@
+Happy path: B1 borrows E1 for 3 days
+  -> APPROVED | loan=L1 | deposit=15000 | Loan approved
+Equipment already taken: B2 borrows E1
+  -> EQUIPMENT_UNAVAILABLE | loan=L2 | deposit=None | Equipment E1 is not available (status: CHECKED_OUT)
+Unknown equipment: B1 borrows E404
+  -> EQUIPMENT_NOT_FOUND | loan=None | deposit=None | Equipment E404 does not exist
+Invalid period: B1 borrows E1 for 10 days
+  -> REJECTED by domain rule: Loan period must be between 1 and 7 days, got 10

@@ -1,0 +1,18 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /home/jose/projects/equipment-borrowing/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/jose/projects/equipment-borrowing
+configfile: pytest.ini
+testpaths: tests
+collecting ... collected 8 items
+
+tests/test_approve_loan_lookup.py::test_T6_unknown_equipment_is_reported_and_no_loan_is_created_BR6 PASSED [ 12%]
+tests/test_approve_loan_rejection.py::test_T8_equipment_rejects_follow_up_and_loan_is_cancelled_BR5 PASSED [ 25%]
+tests/test_approve_loan_success.py::test_T7_successful_approval_is_handled_and_equipment_is_checked_out_BR5 PASSED [ 37%]
+tests/test_borrower_account.py::test_T3_borrower_cannot_hold_more_than_three_active_loans_BR3 PASSED [ 50%]
+tests/test_deposit_policy.py::test_T4_deposit_is_daily_rate_times_days_and_rejects_invalid_rate_BR4 PASSED [ 62%]
+tests/test_loan.py::test_T2_loan_follows_allowed_state_transitions_and_rejects_others_BR2 PASSED [ 75%]
+tests/test_loan_approved_event.py::test_T5_approving_a_loan_records_loan_approved_event_BR5 PASSED [ 87%]
+tests/test_loan_period.py::test_T1_loan_period_accepts_1_to_7_days_and_rejects_others_BR1 PASSED [100%]
+
+============================== 8 passed in 0.02s ===============================

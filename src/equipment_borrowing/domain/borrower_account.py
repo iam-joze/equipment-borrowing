@@ -33,7 +33,7 @@ class BorrowerAccount:
         return loan
 
     def approve_loan(self, loan_id: str) -> None:
-        loan = self._get_loan(loan_id)
+        loan = self.get_loan(loan_id)
         loan.approve()  # BR2 is enforced here; if it raises, no event is recorded
         self._events.append(
             LoanApproved(
@@ -43,12 +43,15 @@ class BorrowerAccount:
             )
         )
 
+    def cancel_loan(self, loan_id: str) -> None:
+        self.get_loan(loan_id).cancel()  # BR2: only an approved loan can be cancelled
+
     def pull_events(self) -> list[LoanApproved]:
         """Hand over the recorded events and clear them, so each is published once."""
         events, self._events = self._events, []
         return events
 
-    def _get_loan(self, loan_id: str) -> Loan:
+    def get_loan(self, loan_id: str) -> Loan:
         for loan in self._loans:
             if loan.loan_id == loan_id:
                 return loan

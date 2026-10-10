@@ -15,3 +15,6 @@ class InvalidDepositRate(DomainError):
 
 class LoanNotFound(DomainError):
     """Raised when an account is asked about a loan it does not hold."""
+
+class EquipmentUnavailable(DomainError):
+    """Raised when equipment that is not available is asked to check out (BR5)."""
