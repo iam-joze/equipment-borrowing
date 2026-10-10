@@ -9,3 +9,6 @@ class InvalidLoanTransition(DomainError):
 
 class LoanLimitExceeded(DomainError):
     """Raised when a borrower would exceed 3 active loans (BR3)."""
+
+class InvalidDepositRate(DomainError):
+    """Raised when the daily deposit rate is not positive (BR4)."""
