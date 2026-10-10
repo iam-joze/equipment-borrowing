@@ -9,6 +9,7 @@ from equipment_borrowing.application.repositories import (
     EquipmentRepository,
 )
 from equipment_borrowing.domain.deposit_policy import DepositPolicy
+from equipment_borrowing.domain.loan_period import LoanPeriod
 
 
 class ApproveLoanService:
@@ -36,5 +37,26 @@ class ApproveLoanService:
                 message=f"Equipment {request.equipment_id} does not exist",
             )
 
-        # The rest of the use case is driven by T7
-        raise NotImplementedError("Success path is added when T7 is written")
+        account = self._account_repository.get(request.borrower_id)
+
+        # Checks that change nothing come first
+        period = LoanPeriod(request.days)  # BR1
+        deposit = self._deposit_policy.calculate(  # BR4
+            period, equipment.daily_deposit_rate
+        )
+
+        # Changes to Aggregate A
+        account.request_loan(request.loan_id, request.equipment_id, period)  # BR3
+        account.approve_loan(request.loan_id)  # BR2, records LoanApproved
+        self._account_repository.save(account)
+
+        # Publish only after A is saved (BR5)
+        for event in account.pull_events():
+            self._event_dispatcher.publish(event)
+
+        return ApproveLoanResult(
+            status=ApproveLoanStatus.APPROVED,
+            loan_id=request.loan_id,
+            deposit=deposit,
+            message="Loan approved",
+        )
