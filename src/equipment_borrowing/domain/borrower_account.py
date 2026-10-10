@@ -1,6 +1,7 @@
 from equipment_borrowing.domain.errors import LoanLimitExceeded
 from equipment_borrowing.domain.loan import Loan
 from equipment_borrowing.domain.loan_period import LoanPeriod
+from equipment_borrowing.domain.events import LoanApproved
 
 MAX_ACTIVE_LOANS = 3
 
@@ -11,6 +12,7 @@ class BorrowerAccount:
     def __init__(self, borrower_id: str) -> None:
         self.borrower_id = borrower_id
         self._loans: list[Loan] = []
+        self._events: list[LoanApproved] = []
 
     @property
     def loans(self) -> tuple[Loan, ...]:
@@ -34,3 +36,12 @@ class BorrowerAccount:
 
     def __hash__(self) -> int:
         return hash(self.borrower_id)
+
+    def approve_loan(self, loan_id: str) -> None:
+        for loan in self._loans:
+            if loan.loan_id == loan_id:
+                loan.approve()
+
+    def pull_events(self) -> list[LoanApproved]:
+        events, self._events = self._events, []
+        return events
