@@ -1,3 +1,4 @@
-]633;E;echo "== domain: imports of application/infrastructure/interface ==";4fddbf66-65e4-4791-9708-da2201e636b2]633;C== domain: imports of application/infrastructure/interface ==
+== domain: imports of application/infrastructure/interface ==
 == application: imports of infrastructure/interface ==
+== infrastructure: imports of interface ==
 (empty sections above mean all dependencies point inward)
