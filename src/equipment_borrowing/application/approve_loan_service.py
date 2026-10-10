@@ -9,6 +9,7 @@ from equipment_borrowing.application.repositories import (
     EquipmentRepository,
 )
 from equipment_borrowing.domain.deposit_policy import DepositPolicy
+from equipment_borrowing.domain.errors import EquipmentUnavailable
 from equipment_borrowing.domain.loan_period import LoanPeriod
 
 
@@ -51,8 +52,19 @@ class ApproveLoanService:
         self._account_repository.save(account)
 
         # Publish only after A is saved (BR5)
-        for event in account.pull_events():
-            self._event_dispatcher.publish(event)
+        try:
+            for event in account.pull_events():
+                self._event_dispatcher.publish(event)
+        except EquipmentUnavailable as rejection:
+            # Aggregate B refused the follow-up: compensate by cancelling the loan
+            account = self._account_repository.get(request.borrower_id)
+            account.cancel_loan(request.loan_id)
+            self._account_repository.save(account)
+            return ApproveLoanResult(
+                status=ApproveLoanStatus.EQUIPMENT_UNAVAILABLE,
+                loan_id=request.loan_id,
+                message=str(rejection),
+            )
 
         return ApproveLoanResult(
             status=ApproveLoanStatus.APPROVED,

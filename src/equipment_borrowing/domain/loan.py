@@ -55,6 +55,7 @@ class Loan:
     def __hash__(self) -> int:
         return hash(self.loan_id)
 
+    @property
     def is_active(self) -> bool:
         return self._status in {LoanStatus.REQUESTED, LoanStatus.APPROVED}
     

@@ -43,6 +43,9 @@ class BorrowerAccount:
             )
         )
 
+    def cancel_loan(self, loan_id: str) -> None:
+        self.get_loan(loan_id).cancel()  # BR2: only an approved loan can be cancelled
+
     def pull_events(self) -> list[LoanApproved]:
         """Hand over the recorded events and clear them, so each is published once."""
         events, self._events = self._events, []

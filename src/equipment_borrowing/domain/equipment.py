@@ -1,5 +1,5 @@
 from enum import Enum
-
+from equipment_borrowing.domain.errors import EquipmentUnavailable
 
 class EquipmentStatus(Enum):
     AVAILABLE = "AVAILABLE"
@@ -24,7 +24,10 @@ class Equipment:
         return self._status
 
     def check_out(self) -> None:
-        # Naive on purpose: the rejection rule is driven by T8
+        if self._status != EquipmentStatus.AVAILABLE:
+            raise EquipmentUnavailable(
+                f"Equipment {self.equipment_id} is not available (status: {self._status.value})"
+            )
         self._status = EquipmentStatus.CHECKED_OUT
 
     def __eq__(self, other: object) -> bool:
