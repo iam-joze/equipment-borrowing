@@ -1,13 +1,14 @@
-from equipment_borrowing.domain.errors import LoanLimitExceeded
+from equipment_borrowing.domain.errors import LoanLimitExceeded, LoanNotFound
+from equipment_borrowing.domain.events import LoanApproved
 from equipment_borrowing.domain.loan import Loan
 from equipment_borrowing.domain.loan_period import LoanPeriod
-from equipment_borrowing.domain.events import LoanApproved
 
 MAX_ACTIVE_LOANS = 3
 
 
 class BorrowerAccount:
-    """Aggregate Root A. Protects BR3: at most 3 active loans."""
+    """Aggregate Root A. Protects BR3 (at most 3 active loans) and
+    records the LoanApproved event for BR5."""
 
     def __init__(self, borrower_id: str) -> None:
         self.borrower_id = borrower_id
@@ -31,17 +32,30 @@ class BorrowerAccount:
         self._loans.append(loan)
         return loan
 
+    def approve_loan(self, loan_id: str) -> None:
+        loan = self._get_loan(loan_id)
+        loan.approve()  # BR2 is enforced here; if it raises, no event is recorded
+        self._events.append(
+            LoanApproved(
+                loan_id=loan.loan_id,
+                borrower_id=self.borrower_id,
+                equipment_id=loan.equipment_id,
+            )
+        )
+
+    def pull_events(self) -> list[LoanApproved]:
+        """Hand over the recorded events and clear them, so each is published once."""
+        events, self._events = self._events, []
+        return events
+
+    def _get_loan(self, loan_id: str) -> Loan:
+        for loan in self._loans:
+            if loan.loan_id == loan_id:
+                return loan
+        raise LoanNotFound(f"Borrower {self.borrower_id} has no loan {loan_id}")
+
     def __eq__(self, other: object) -> bool:
         return isinstance(other, BorrowerAccount) and self.borrower_id == other.borrower_id
 
     def __hash__(self) -> int:
         return hash(self.borrower_id)
-
-    def approve_loan(self, loan_id: str) -> None:
-        for loan in self._loans:
-            if loan.loan_id == loan_id:
-                loan.approve()
-
-    def pull_events(self) -> list[LoanApproved]:
-        events, self._events = self._events, []
-        return events

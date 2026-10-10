@@ -12,3 +12,6 @@ class LoanLimitExceeded(DomainError):
 
 class InvalidDepositRate(DomainError):
     """Raised when the daily deposit rate is not positive (BR4)."""
+
+class LoanNotFound(DomainError):
+    """Raised when an account is asked about a loan it does not hold."""
